@@ -63,8 +63,8 @@ input{font-family:'Andika',Verdana,sans-serif;}
 .dot.done{background:var(--green);}
 .dot.now{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);}
 .count{font-size:16px;color:var(--muted);}
-body.on-landing .dots, body.on-landing .count, body.on-landing #mode, body.on-landing .home{display:none;}
-body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
+body.on-landing .dots, body.on-landing .count, body.on-landing .home{display:none;}
+body.on-paper .dots, body.on-paper .count{display:none;}
 /* the start page has its own big title, so the bar would only repeat it */
 body.on-landing .topbar{display:none;}
 
@@ -151,11 +151,6 @@ body.on-landing .topbar{display:none;}
   box-shadow:0 2px 0 #A02C2C;
 }
 .chip:active{transform:translateY(2px);box-shadow:none;}
-
-/* mode toggle */
-.mode{display:flex;border:3px solid var(--purple);border-radius:12px;overflow:hidden;}
-.mode .pill{border:none;background:#fff;color:var(--purple);padding:8px 15px;font-size:16px;}
-.mode .pill.on{background:var(--purple);color:#fff;}
 
 .rule{grid-column:1/-1;height:6px;background:var(--ink);border-radius:3px;margin:4px 0;}
 
@@ -556,10 +551,6 @@ body.on-landing .topbar{display:none;}
   </div>
   <div class="dots" id="dots"></div>
   <div class="count" id="count">Problem 1 of 5</div>
-  <div class="mode" id="mode" role="group" aria-label="Subtraction type">
-    <button class="pill on" type="button" data-mode="basic">Regular</button>
-    <button class="pill" type="button" data-mode="zero">Across zero</button>
-  </div>
 </header>
 
 <!-- ============ LANDING ============ -->
@@ -605,12 +596,6 @@ body.on-landing .topbar{display:none;}
   <details class="grownups">
     <summary>For grown-ups</summary>
     <p>Each set has 5 problems. The mix of addition and subtraction adjusts to what your child found harder in recent sessions. Results stay saved in this browser on this device only.</p>
-    <div class="row"><span>Subtraction type:</span>
-      <div class="mode" id="mode2" role="group" aria-label="Subtraction type">
-        <button class="pill on" type="button" data-mode="basic">Regular</button>
-        <button class="pill" type="button" data-mode="zero">Across zero</button>
-      </div>
-    </div>
     <div class="row">
       <button class="btn ghost sm" type="button" id="lpReport">Parent report</button>
       <button class="btn ghost sm" type="button" id="lpSheet">Practice sheet</button>
@@ -688,7 +673,7 @@ body.on-landing .topbar{display:none;}
      Config + storage
      ========================================================= */
   var N = 5;
-  var LS_SESS='regroup.sessions.v1', LS_NAME='regroup.name', LS_MODE='regroup.mode';
+  var LS_SESS='regroup.sessions.v1', LS_NAME='regroup.name';
   function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
   function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
   function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
@@ -714,10 +699,9 @@ body.on-landing .topbar{display:none;}
     add_carry_ones:{label:'Carrying ones into tens',            op:'add', cols:[1]},
     add_carry_tens:{label:'Carrying tens into hundreds (and beyond)', op:'add', cols:[2,3]},
     sub_borrow_ones:{label:'Trading a ten for 10 ones',         op:'sub', cols:[0,1]},
-    sub_borrow_tens:{label:'Trading a hundred for 10 tens',     op:'sub', cols:[1,2]},
-    sub_zero:{label:'Trading across a zero',                    op:'sub', cols:[0,1,2]}
+    sub_borrow_tens:{label:'Trading a hundred for 10 tens',     op:'sub', cols:[1,2]}
   };
-  var SKILL_ORDER=['add_carry_ones','add_carry_tens','sub_borrow_ones','sub_borrow_tens','sub_zero'];
+  var SKILL_ORDER=['add_carry_ones','add_carry_tens','sub_borrow_ones','sub_borrow_tens'];
 
   var SKILL_NEXT = {
     add_carry_ones:{
@@ -731,10 +715,7 @@ body.on-landing .topbar{display:none;}
       strong:'Trading a ten for ones is going well.'},
     sub_borrow_tens:{
       weak:'Trading a hundred: same idea in the tens column. 1 hundred = 10 tens. Practice saying "cross out, one less, add ten" out loud.',
-      strong:'Trading a hundred for tens is going well.'},
-    sub_zero:{
-      weak:'Across zero: try the "big tens" trick. Read 403 as 40 tens and 3 ones. Trade 1 of the 40 tens, and you get 39 tens and 13 ones. The 3 and the 9 are your new top digits.',
-      strong:'Trading across zero is a hard skill, and it looks solid.'}
+      strong:'Trading a hundred for tens is going well.'}
   };
 
   var ERR = {
@@ -748,11 +729,6 @@ body.on-landing .topbar{display:none;}
       why:'They understand trading. The bookkeeping step slipped.',
       next:'Ask for the cross-out every time: cross out the old digit and write the new one above it before using that column.',
       kid:'Cross out and write the new number.'},
-    zero_trouble:{title:'Got tangled trading across a zero',
-      what:'With a 0 in the tens, the trade has two steps (hundreds → tens → ones). One step was skipped or miscounted.',
-      why:'Expected while learning. Across-zero problems are the hardest kind of regrouping in 2nd grade.',
-      next:'Use the "big tens" trick: read 403 as 40 tens and 3 ones. Trade 1 ten, and you have 39 tens and 13 ones.',
-      kid:'Zero? Go next door to the hundreds.'},
     forgot_carry:{title:'Forgot to add the carried 1',
       what:'A column made 10 or more, but the new ten (or hundred) was not added to the next column.',
       why:'Kids often write the ones digit correctly and then skip the little 1.',
@@ -779,11 +755,10 @@ body.on-landing .topbar{display:none;}
      State + elements
      ========================================================= */
   var state = {
-    i:0, mode:lsGet(LS_MODE,'basic'), problems:[], p:null,
+    i:0, problems:[], p:null,
     answerBoxes:[], workBoxes:[], workBoxes2:[], helpBtns:[],
     session:null, rec:null, t0:0, returnTo:'landing', name:''
   };
-  if(state.mode!=='zero') state.mode='basic';
 
   function $(id){ return document.getElementById(id); }
   var grid=$('grid'), kindEl=$('kind'), hintEl=$('hint'), fb=$('feedback'), coach=$('coach');
@@ -833,8 +808,6 @@ body.on-landing .topbar{display:none;}
     return cols;
   }
 
-  function isZeroCase(a,b){ var c=subProcess(a,b); return c[1].orig===0 && c[0].recv>0; }
-
   function skillsFor(p){
     if(p.type==='add'){
       var c=addProcess(p.a,p.b), s=[];
@@ -843,7 +816,6 @@ body.on-landing .topbar{display:none;}
       return s;
     }
     var d=subProcess(p.a,p.b);
-    if(d[1].orig===0 && d[0].recv) return ['sub_zero'];
     var t=[];
     if(d[0].recv) t.push('sub_borrow_ones');
     if(d[1].recv) t.push('sub_borrow_tens');
@@ -872,7 +844,7 @@ body.on-landing .topbar{display:none;}
       var a=rnd(210,999), b=rnd(105,a-11);
       if(b<100 || a-b<100) continue;               // keep answers 3 digits (cleaner for 2nd grade)
       var c=subProcess(a,b), r1=c[0].recv>0, r2=c[1].recv>0;
-      if(c[1].orig===0 && r1) continue;           // across-zero has its own generator
+      if(c[1].orig===0 && r1) continue;           // across-zero problems live in their own tool
       if(kind==='ones' && !(r1&&!r2)) continue;
       if(kind==='tens' && !(!r1&&r2)) continue;
       if(kind==='both' && !(r1&&r2)) continue;
@@ -882,25 +854,11 @@ body.on-landing .topbar{display:none;}
     }
     return {type:'sub', a:352, b:127, result:225, kind:'ones'};
   }
-  // Top number has 0 tens, so the ones must borrow through the zero.
-  function makeSubZero(){
-    while(true){
-      var h=rnd(2,9);
-      var o=rnd(1,8);
-      var a=h*100+o;
-      var bh=rnd(1,h-1);
-      var bt=rnd(1,9);
-      var bo=rnd(o+1,9);
-      var b=bh*100+bt*10+bo;
-      if(b>=100 && b<a) return {type:'sub', a:a, b:b, result:a-b, zero:true, kind:'zero'};
-    }
-  }
   var GEN = {
     add_carry_ones:function(){ return makeAdd('ones'); },
     add_carry_tens:function(){ return makeAdd('tens'); },
     sub_borrow_ones:function(){ return makeSub('ones'); },
     sub_borrow_tens:function(){ return makeSub('tens'); },
-    sub_zero:makeSubZero,
     add_both:function(){ return makeAdd('both'); },
     sub_both:function(){ return makeSub('both'); },
     add_none:function(){ return makeAdd('none'); },
@@ -947,8 +905,7 @@ body.on-landing .topbar{display:none;}
     var st=skillStats(hist);
     function m(k){ return st[k].m==null ? 0.6 : st[k].m; }
     var addM=avg([m('add_carry_ones'), m('add_carry_tens')]);
-    var subKeys = state.mode==='zero' ? ['sub_zero'] : ['sub_borrow_ones','sub_borrow_tens'];
-    var subM=avg(subKeys.map(m));
+    var subM=avg([m('sub_borrow_ones'), m('sub_borrow_tens')]);
     var nAdd=2;
     var anyData = SKILL_ORDER.some(function(k){ return st[k].opp>0; });
     if(anyData){
@@ -967,9 +924,9 @@ body.on-landing .topbar{display:none;}
     var list=[], i;
     for(i=0;i<nAdd;i++) list.push(makeAdd(weighted(addMap)));
     var subs=[];
-    for(i=0;i<N-nAdd;i++) subs.push(state.mode==='zero' ? makeSubZero() : makeSub(weighted(subMap)));
-    // keep some variety when there are 3+ regular subtraction problems
-    if(state.mode!=='zero' && subs.length>=3 && subs.every(function(p){ return p.kind===subs[0].kind; })){
+    for(i=0;i<N-nAdd;i++) subs.push(makeSub(weighted(subMap)));
+    // keep some variety when there are 3+ subtraction problems
+    if(subs.length>=3 && subs.every(function(p){ return p.kind===subs[0].kind; })){
       var other=pick(['ones','tens','both'].filter(function(k){ return k!==subs[0].kind; }));
       subs[subs.length-1]=makeSub(other);
     }
@@ -1082,7 +1039,7 @@ body.on-landing .topbar{display:none;}
     var plan=planSet();
     state.problems=plan.problems;
     state.i=0;
-    state.session={ id:Date.now(), date:new Date().toISOString(), name:state.name, mode:state.mode, nAdd:plan.nAdd, nSub:plan.nSub, problems:[] };
+    state.session={ id:Date.now(), date:new Date().toISOString(), name:state.name, nAdd:plan.nAdd, nSub:plan.nSub, problems:[] };
     card.hidden=false; doneCard.hidden=true;
     show('practice');
     render();
@@ -1111,7 +1068,7 @@ body.on-landing .topbar{display:none;}
 
   function newRecord(p){
     return {
-      type:p.type, a:p.a, b:p.b, result:p.result, zero:!!(p.zero || (p.type==='sub' && isZeroCase(p.a,p.b))),
+      type:p.type, a:p.a, b:p.b, result:p.result,
       kind:p.kind||'', skills:skillsFor(p), skillOk:{},
       tries:0, firstTry:null, revealed:false, hintMax:0, helpOpens:0,
       firstErrors:[], errorCodes:[], firstAnswer:'', usedWork:false, ms:0
@@ -1173,10 +1130,8 @@ body.on-landing .topbar{display:none;}
   function refreshHelp(idx){
     var p=state.p;
     if(!p || p.type!=='sub') return;
-    var top=digits(p.a,3)[idx];
     var v=parseInt(state.workBoxes[idx].value,10);
-    var zeroCol = (idx===1 && top===0);
-    state.helpBtns[idx].hidden = !(zeroCol || v>=10);
+    state.helpBtns[idx].hidden = !(v>=10);
   }
 
   function buildSub(p){
@@ -1271,9 +1226,7 @@ body.on-landing .topbar{display:none;}
   /* ----- help drawer (unchanged method; now counted in diagnostics) ----- */
   function openHelp(idx){
     var p=state.p;
-    var top=digits(p.a,3)[idx];
     if(state.rec) state.rec.helpOpens++;
-    if(idx===1 && top===0){ zeroHelp(); return; }
     var v=parseInt(state.workBoxes[idx].value,10);
     if(!(v>=10)) return;
     var take=digits(p.b,3)[idx];
@@ -1316,48 +1269,6 @@ body.on-landing .topbar{display:none;}
     openDrawer();
     mini.focus();
   }
-  function zeroHelp(){
-    var h=digits(state.p.a,3)[0];
-    drawer.innerHTML='';
-    var t=el('h2'); t.textContent='No tens to take'; drawer.appendChild(t);
-    var s=el('p','sub'); s.textContent='Go next door and trade.'; drawer.appendChild(s);
-
-    var s1=el('div','step');
-    var p1=el('p'); p1.textContent='The tens are 0. There is nothing there to give away.';
-    s1.appendChild(p1); drawer.appendChild(s1);
-
-    var s2=el('div','step');
-    var p2=el('p'); p2.textContent='So trade 1 hundred for tens.';
-    var eq=el('div','eq');
-    var lab=el('span'); lab.textContent='1 hundred =';
-    var mini=el('input','mini'); mini.type='text'; mini.maxLength=2;
-    mini.setAttribute('aria-label','one hundred equals how many tens');
-    digitsOnly(mini);
-    var unit=el('span'); unit.textContent='tens';
-    unit.style.fontSize='22px';
-    eq.appendChild(lab); eq.appendChild(mini); eq.appendChild(unit);
-    s2.appendChild(p2); s2.appendChild(eq); drawer.appendChild(s2);
-
-    var s3=el('div','step last'); s3.hidden=true;
-    var a1=el('p'); a1.textContent='Tap the '+h+' and write '+(h-1)+' above it. You spent one hundred.';
-    var a2=el('p'); a2.textContent='Write 10 in the tens box. Those are your new tens.';
-    var a3=el('p'); a3.textContent='Now the ones need one of them. Tap ✕ on the 10 and write 9 above it.';
-    s3.appendChild(a1); s3.appendChild(a2); s3.appendChild(a3);
-    drawer.appendChild(s3);
-
-    mini.addEventListener('input', function(){
-      if(mini.value==='10'){ mini.classList.add('ok'); s3.hidden=false; }
-      else { mini.classList.remove('ok'); s3.hidden=true; }
-    });
-
-    var c=el('button','close'); c.type='button'; c.textContent='Back to the problem';
-    c.addEventListener('click', closeHelp);
-    drawer.appendChild(c);
-
-    openDrawer();
-    mini.focus();
-  }
-
   var helpOpener=null;
   function openDrawer(){
     helpOpener=document.activeElement;
@@ -1385,7 +1296,6 @@ body.on-landing .topbar{display:none;}
   function analyze(p, gots){
     var n=gots.length, res=String(p.result), out=[];
     var c = p.type==='add' ? addProcess(p.a,p.b) : subProcess(p.a,p.b);
-    var zeroCase = p.type==='sub' && c[1].orig===0 && c[0].recv>0;
     for(var i=0;i<n;i++){
       var placeK=n-1-i, g=gots[i], col=c[placeK];
       var want=col.digit;
@@ -1404,7 +1314,7 @@ body.on-landing .topbar{display:none;}
           }else{
             var alt = col.work + col.gave - col.bot;
             if(col.recv && (gv===Math.abs(col.before-col.bot) || gv===Math.abs(col.orig-col.bot))) code='smaller_from_larger';
-            else if(col.gave && alt>=0 && alt<=9 && gv===alt) code = (zeroCase && placeK>0) ? 'zero_trouble' : 'no_reduce';
+            else if(col.gave && alt>=0 && alt<=9 && gv===alt) code='no_reduce';
             else code='fact_slip';
           }
         }
@@ -1480,17 +1390,11 @@ body.on-landing .topbar{display:none;}
       }
     }else{
       var ss=subProcess(p.a,p.b), cc=ss[o.place];
-      var zero = ss[1].orig===0 && ss[0].recv>0;
       if(level===1){
         if(o.code==='smaller_from_larger'){
-          if(zero && o.place===1) lines.push('The tens started at 0. After you trade a hundred for 10 tens, and give 1 ten to the ones, how many tens are left?');
-          else if(zero && o.place===0) lines.push('Is '+cc.orig+' big enough to take away '+cc.bot+'? The tens are 0, so you’ll need to go next door to the hundreds first.');
-          else lines.push('Look at the '+P+': '+cc.before+' take away '+cc.bot+'. Is '+cc.before+' big enough? If not, trade 1 from the '+next+'.');
+          lines.push('Look at the '+P+': '+cc.before+' take away '+cc.bot+'. Is '+cc.before+' big enough? If not, trade 1 from the '+next+'.');
         }else if(o.code==='no_reduce'){
           lines.push('The '+P+' gave 1 to the '+prev+'. So the top '+P+' isn’t '+cc.orig+' anymore. What is it now?');
-        }else if(o.code==='zero_trouble'){
-          if(o.place===1) lines.push('You traded a hundred for 10 tens. Then the ones took 1 of those tens. How many tens are left?');
-          else lines.push('You traded 1 hundred away. How many hundreds are left on top?');
         }else{
           lines.push('Your trading looks right! Check the take-away again: '+cc.work+' − '+cc.bot+'.');
         }
@@ -1681,41 +1585,6 @@ body.on-landing .topbar{display:none;}
     setTimeout(function(){ box.innerHTML=''; }, 3400);
   }
 
-  /* ----- mode toggle (topbar + landing) ----- */
-  function paintMode(){
-    var pills=document.querySelectorAll('.mode .pill');
-    for(var i=0;i<pills.length;i++){
-      var on=pills[i].getAttribute('data-mode')===state.mode;
-      pills[i].classList.toggle('on', on); pills[i].setAttribute('aria-pressed', on?'true':'false');
-    }
-  }
-  function untouched(){
-    var all=state.answerBoxes.concat(state.workBoxes, state.workBoxes2);
-    for(var i=0;i<all.length;i++){ if(all[i].value!=='') return false; }
-    return state.rec ? state.rec.tries===0 : true;
-  }
-  function setMode(m){
-    if(m===state.mode) return;
-    state.mode=m; lsSet(LS_MODE,m);
-    paintMode();
-    if($('practice').hidden || card.hidden || !state.problems.length) return;
-    if(state.session) state.session.mode = m;
-    for(var k=0;k<N;k++){
-      if(k<state.i) continue;
-      if(state.problems[k].type!=='sub') continue;
-      if(k===state.i && !untouched()) continue;
-      state.problems[k] = (m==='zero') ? makeSubZero() : makeSub(pick(['ones','tens','both']));
-      if(k===state.i) render();
-    }
-  }
-  [$('mode'),$('mode2')].forEach(function(modeEl){
-    modeEl.addEventListener('click', function(e){
-      var btn = e.target.closest ? e.target.closest('.pill') : null;
-      if(!btn) return;
-      setMode(btn.getAttribute('data-mode'));
-    });
-  });
-
   /* =========================================================
      Parent report
      ========================================================= */
@@ -1723,6 +1592,7 @@ body.on-landing .topbar{display:none;}
     var t={};
     sessions.forEach(function(s){ s.problems.forEach(function(r){
       (r.errorCodes||[]).forEach(function(c){
+        if(!ERR[c]) return;                       // skip codes from older versions
         if(!t[c]) t[c]={count:0, ex:null};
         t[c].count++;
         if(!t[c].ex){
@@ -1785,8 +1655,8 @@ body.on-landing .topbar{display:none;}
       if(out.indexOf(ERR[c].next)<0) out.push(ERR[c].next);
     });
     if(d.strengths.length) out.push('Celebrate what’s working: '+SKILL_NEXT[d.strengths[0]].strong);
-    if(d.cur.mode!=='zero' && d.stRec.sub_borrow_ones.m>=0.8 && d.stRec.sub_borrow_tens.m>=0.8 && d.stRec.sub_zero.opp===0)
-      out.push('Ready for a stretch: switch Subtraction type to "Across zero" (under "For grown-ups" on the start screen).');
+    if(d.stRec.sub_borrow_ones.m>=0.8 && d.stRec.sub_borrow_tens.m>=0.8)
+      out.push('Ready for a stretch: try the Across-Zero Practice tool for problems like 403 − 168.');
     out.push('Print the personalized practice sheet: 7 problems target the focus skills and 3 keep strengths warm.');
     return out;
   }
@@ -1805,7 +1675,7 @@ body.on-landing .topbar{display:none;}
     if(!d){ box.innerHTML='<div class="rp-empty">No practice saved yet. Finish at least one problem, and the report will appear here.</div>'; return; }
     var h='';
     h+='<h1>'+esc(d.name ? d.name+'’s' : 'Your Child’s')+' Regrouping Report</h1>';
-    h+='<p class="meta">Session: '+esc(fmtDate(d.cur.date))+' · '+(d.cur.mode==='zero'?'Across-zero subtraction':'Regular regrouping')+' · '+d.all.length+' session'+(d.all.length===1?'':'s')+' saved on this device</p>';
+    h+='<p class="meta">Session: '+esc(fmtDate(d.cur.date))+' · '+d.all.length+' session'+(d.all.length===1?'':'s')+' saved on this device</p>';
 
     h+='<div class="kpis">'+
       '<div class="kpi"><b>'+d.first+' / '+d.n+'</b><span>right on the first try</span></div>'+
@@ -1861,10 +1731,10 @@ body.on-landing .topbar{display:none;}
     // progress
     var hist=d.all.slice(-8);
     if(hist.length>1){
-      h+='<h2>Progress over time</h2><table><thead><tr><th>Date</th><th>Type</th><th>First-try correct</th><th style="width:180px"><span class="sr-only">Progress bar</span></th></tr></thead><tbody>';
+      h+='<h2>Progress over time</h2><table><thead><tr><th>Date</th><th>First-try correct</th><th style="width:180px"><span class="sr-only">Progress bar</span></th></tr></thead><tbody>';
       hist.forEach(function(s){
         var f=s.problems.filter(function(r){ return r.firstTry; }).length, n=s.problems.length;
-        h+='<tr><td>'+esc(fmtDate(s.date))+'</td><td>'+(s.mode==='zero'?'Across zero':'Regular')+'</td><td>'+f+' / '+n+'</td><td><div class="bar" aria-hidden="true"><i style="width:'+Math.round(f/n*100)+'%"></i></div></td></tr>';
+        h+='<tr><td>'+esc(fmtDate(s.date))+'</td><td>'+f+' / '+n+'</td><td><div class="bar" aria-hidden="true"><i style="width:'+Math.round(f/n*100)+'%"></i></div></td></tr>';
       });
       h+='</tbody></table>';
     }
@@ -1931,7 +1801,7 @@ body.on-landing .topbar{display:none;}
     var stretch=false;
     if(!weak.length){
       stretch=true;
-      weak = st.sub_zero.opp ? ['sub_both','add_both'] : ['sub_zero','sub_both'];
+      weak = ['sub_both','add_both'];
     }
     // 7 focus problems, split by weakness (at least 1 each)
     var w=weak.map(function(k){ return (st[k] && st[k].m!=null ? 1-st[k].m : 0.5)+0.15; });
@@ -2015,15 +1885,10 @@ body.on-landing .topbar{display:none;}
       }
       if(c[3].digit) s.push('Write the carried 1 in the thousands.');
     }else{
-      var d=subProcess(p.a,p.b), zero=d[1].orig===0 && d[0].recv>0;
-      if(zero){
-        s.push('Ones: '+d[0].orig+' − '+d[0].bot+'? Not enough, and the tens are 0!');
-        s.push('Trade 1 hundred: hundreds '+d[2].orig+' → '+d[2].work+', tens 0 → 10.');
-        s.push('Trade 1 ten: tens 10 → 9, ones '+d[0].orig+' → '+d[0].work+'.');
-      }
+      var d=subProcess(p.a,p.b);
       for(var k2=0;k2<3;k2++){
         var cc=d[k2], P2=PLACES[k2].charAt(0).toUpperCase()+PLACES[k2].slice(1);
-        if(!zero && cc.recv) s.push(P2+': '+cc.before+' − '+cc.bot+'? Not enough! Trade 1 from the '+PLACES[k2+1]+': '+PLACES[k2+1]+' '+d[k2+1].orig+' → '+(d[k2+1].orig-1)+', '+PLACES[k2]+' '+cc.before+' → '+cc.work+'.');
+        if(cc.recv) s.push(P2+': '+cc.before+' − '+cc.bot+'? Not enough! Trade 1 from the '+PLACES[k2+1]+': '+PLACES[k2+1]+' '+d[k2+1].orig+' → '+(d[k2+1].orig-1)+', '+PLACES[k2]+' '+cc.before+' → '+cc.work+'.');
         if(cc.work>=10){
           var r=cc.work-10;
           s.push(P2+': '+cc.work+' − '+cc.bot+'. '+cc.work+' = 10 + '+r+'; 10 − '+cc.bot+' = '+(10-cc.bot)+'; '+(10-cc.bot)+' + '+r+' = '+cc.digit+'.');
@@ -2304,7 +2169,6 @@ body.on-landing .topbar{display:none;}
     draw();
   })();
 
-  paintMode();
   show('landing');
 })();
 </script>
