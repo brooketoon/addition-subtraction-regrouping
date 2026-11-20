@@ -540,6 +540,11 @@ body.on-landing .topbar{display:none;}
 #confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:30;}
 .piece{position:absolute;top:-24px;width:12px;height:18px;border-radius:3px;animation:fall linear forwards;}
 @keyframes fall{to{transform:translateY(104vh) rotate(640deg);opacity:.9;}}
+
+/* ---------- copyright footer ---------- */
+.sitefoot{text-align:center;font-size:13px;line-height:1.5;color:var(--muted);padding:14px 16px 22px;}
+.sitefoot b{font-family:'Fredoka',sans-serif;font-weight:500;color:var(--purple);}
+@media print{ .sitefoot{font-size:9pt;padding:10px 0 0;color:#666;} }
 </style>
 </head>
 <body class="on-landing">
@@ -666,6 +671,10 @@ body.on-landing .topbar{display:none;}
   <div class="paper sheet" id="sheetBody"></div>
 </section>
 </main>
+
+<footer class="sitefoot">
+  &copy; 2026 <b>Curiosity Engine Interactive</b>. All rights reserved.
+</footer>
 
 <div class="scrim" id="scrim" hidden></div>
 <div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Break it apart helper"></div>
