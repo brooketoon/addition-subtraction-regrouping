@@ -65,6 +65,8 @@ input{font-family:'Andika',Verdana,sans-serif;}
 .count{font-size:16px;color:var(--muted);}
 body.on-landing .dots, body.on-landing .count, body.on-landing #mode, body.on-landing .home{display:none;}
 body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
+/* the start page has its own big title, so the bar would only repeat it */
+body.on-landing .topbar{display:none;}
 
 /* ---------- card ---------- */
 #practice{max-width:760px;margin:0 auto;padding:26px 16px 70px;}
@@ -405,23 +407,23 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
 .example .exlabel{font-family:'Fredoka',sans-serif;color:var(--purple);font-size:15px;margin:0 0 4px;}
 .example ol{margin:0;padding-left:20px;font-size:13.5px;}
 .example li{margin:2px 0;}
-.wgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 6px;}
-.wp{border:1.5px solid #E3DEEC;border-radius:10px;padding:6px 4px 8px;}
+.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 14px;}
+.wp{border:2px solid #E3DEEC;border-radius:12px;padding:8px 8px 14px;}
 .wph{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);padding:0 4px 2px;}
-.wph b{font-size:14px;color:var(--ink);}
-.wpg{display:grid;grid-template-columns:repeat(4,26px);justify-content:center;column-gap:3px;row-gap:3px;}
-.wpg .d{height:30px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;position:relative;}
-.wpg .o{height:30px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;}
-.wpg .cb{width:18px;height:18px;border:1.5px dashed var(--green);border-radius:4px;justify-self:center;align-self:end;}
-.wpg .sp{height:26px;}
-.wpg .ln{grid-column:1/-1;height:3px;background:#222;border-radius:2px;}
-.wpg .ab{height:32px;border:1.5px solid #9A93A8;border-radius:5px;}
-.wpg .ab.key{display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--blue);border-color:var(--blue);}
+.wph b{font-size:17px;color:var(--ink);}
+.wpg{display:grid;grid-template-columns:repeat(4,46px);justify-content:center;column-gap:6px;row-gap:5px;}
+.wpg .d{height:48px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700;position:relative;}
+.wpg .o{height:48px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;}
+.wpg .cb{width:32px;height:32px;border:2px dashed var(--green);border-radius:7px;justify-self:center;align-self:end;}
+.wpg .sp{height:48px;border-bottom:1.5px dotted #D8D2E3;}
+.wpg .ln{grid-column:1/-1;height:4px;background:#222;border-radius:2px;}
+.wpg .ab{height:54px;border:2px solid #9A93A8;border-radius:9px;}
+.wpg .ab.key{display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:var(--blue);border-color:var(--blue);}
 .ex .wpg{grid-template-columns:repeat(4,36px);}
 .ex .wpg .d{height:40px;font-size:32px;}
 .ex .wpg .o{height:40px;font-size:28px;}
 .ex .wpg .ab{height:40px;}
-.ex .wpg .ann{height:30px;display:flex;align-items:flex-end;justify-content:center;gap:2px;font-size:15px;font-weight:700;}
+.ex .wpg .ann, .kx .wpg .ann{height:30px;display:flex;align-items:flex-end;justify-content:center;gap:2px;font-size:15px;font-weight:700;}
 .ann .old{color:#999;text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;}
 .ann .new{color:var(--red);}
 .ann .cy{color:var(--green);}
@@ -430,6 +432,21 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
 .tag.warm{background:var(--green-soft);color:#14764A;}
 .tag.focus{background:var(--purple-soft);color:var(--purple);}
 .keytable td{font-size:13px;}
+.contd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--purple);padding-bottom:4px;margin:0 0 14px;}
+.contd h2{border:none;margin:0;padding:0;}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.kcard{display:flex;gap:12px;align-items:flex-start;border:1.5px solid #E3DEEC;border-radius:10px;padding:8px 10px;break-inside:avoid;}
+.kcard h3{margin:0 0 3px;font-size:15px;font-family:'Fredoka',sans-serif;font-weight:600;color:var(--purple);}
+.kcard ol{margin:0;padding-left:18px;font-size:12px;line-height:1.35;}
+.kcard li{margin:1px 0;}
+.kcard .sk{font-size:11px;color:var(--muted);margin:3px 0 0;}
+.kx .wpg{grid-template-columns:repeat(4,28px);column-gap:3px;row-gap:2px;}
+.kx .wpg .d{height:30px;font-size:24px;}
+.kx .wpg .o{height:30px;font-size:22px;}
+.kx .wpg .ab{height:32px;border-width:1.5px;border-radius:6px;}
+.kx .wpg .ab.key{font-size:20px;}
+.kx .wpg .ann{height:22px;font-size:13px;}
+.kx .wpg .d.x::after{height:2.5px;}
 .pagebreak{break-before:page;page-break-before:always;margin-top:30px;}
 
 @media (max-width:560px){
@@ -445,6 +462,49 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
   .paper{padding:18px 14px;}
   .kpis{grid-template-columns:repeat(2,1fr);}
   .wgrid{grid-template-columns:repeat(2,1fr);}
+  .kgrid{grid-template-columns:1fr;}
+  .wpg{grid-template-columns:repeat(4,36px);}
+}
+
+/* ---------- wide screens: Pip + start in a side column, demo beside it ---------- */
+@media (min-width:980px){
+  .landing{
+    max-width:1240px;padding:10px 24px 20px;
+    display:grid;grid-template-columns:clamp(300px,28vw,360px) minmax(0,1fr);column-gap:24px;align-items:start;
+    grid-template-areas:"title demo" "hero demo" "name demo" "dots demo" "start demo" "grown demo";
+    grid-template-rows:auto auto auto auto auto 1fr;
+  }
+  .landing .big{grid-area:title;text-align:left;font-size:34px;margin:4px 0 8px;}
+  .landing .hero{grid-area:hero;justify-content:flex-start;align-items:flex-start;gap:6px;margin:0 0 12px;}
+  #heroMascot svg{width:112px;height:auto;}
+  .landing .bubble{margin:6px 0 0;max-width:240px;flex:1 1 auto;padding:12px 14px;}
+  .landing .bubble::after{bottom:auto;top:30px;}
+  .landing .bubble p{font-size:17px;}
+  .landing .demo{grid-area:demo;margin:0;}
+  .landing .namebox{grid-area:name;align-items:stretch;margin:0 0 10px;}
+  .landing .namebox label{text-align:left;}
+  .landing .namebox input{width:100%;}
+  .landing .fivedots{grid-area:dots;text-align:left;margin:0 0 12px;}
+  .landing .fivedots .row{justify-content:flex-start;}
+  .landing .start{grid-area:start;width:100%;margin:0 0 16px;}
+  .landing .grownups{grid-area:grown;}
+  .stage{min-height:0;--dc:46px;}
+  .demo{padding:12px 14px 10px;}
+  .demo h2{font-size:20px;margin:0 0 6px;}
+  .caption{min-height:54px;margin:6px 0 4px;padding:8px 12px;font-size:18px;}
+  .dprog{margin-top:6px;}
+}
+/* very wide: hint panel sits beside the problem instead of under it */
+@media (min-width:980px){
+  .stage{display:flex;justify-content:center;align-items:center;gap:20px;min-height:318px;}
+  .sleft{flex:0 0 auto;}
+  .sright{flex:0 1 320px;min-width:280px;}
+  .sright .dcoach{margin:0;max-width:none;}
+  .sright .bp{margin:0;}
+  .sright .bps{flex-direction:column;gap:2px;}
+  .sright .bstep{flex-direction:row;justify-content:space-between;padding:8px 12px;}
+  .sright .bstep .beq{justify-content:flex-end;}
+  .sright .barrow{transform:rotate(90deg);line-height:1;animation:none;}
 }
 @media (max-width:380px){
   :root{--cell:46px;}
@@ -467,9 +527,12 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
   .noprint,.topbar,#confetti,.scrim,.drawer{display:none !important;}
   .paperwrap{max-width:none;padding:0;margin:0;}
   .paper{box-shadow:none;border-radius:0;padding:0;}
-  .wgrid{grid-template-columns:repeat(5,1fr);}
+  .wgrid{grid-template-columns:repeat(3,1fr);}
+  .kgrid{grid-template-columns:1fr 1fr;}
+  .wpg{grid-template-columns:repeat(4,46px);}
+  .pagebreak{margin-top:0;}
   .kpis{grid-template-columns:repeat(4,1fr);}
-  .wp,.notice,.example,tr{break-inside:avoid;}
+  .wp,.notice,.example,.kcard,tr{break-inside:avoid;}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
 
@@ -497,6 +560,7 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
 <!-- ============ LANDING ============ -->
 <main id="app">
 <section class="landing view" id="landing">
+  <h1 class="big">Regrouping Practice</h1>
   <div class="hero">
     <div id="heroMascot"></div>
     <div class="bubble">
@@ -505,7 +569,6 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
       <button class="speak" type="button" id="sayHello">&#128266; Read to me</button>
     </div>
   </div>
-  <h1 class="big">Regrouping Practice</h1>
 
   <div class="demo" id="demo">
     <h2>Watch how it works</h2>
@@ -798,7 +861,7 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
   function makeSub(kind){
     for(var g=0; g<20000; g++){
       var a=rnd(210,999), b=rnd(105,a-11);
-      if(b<100) continue;
+      if(b<100 || a-b<100) continue;               // keep answers 3 digits (cleaner for 2nd grade)
       var c=subProcess(a,b), r1=c[0].recv>0, r2=c[1].recv>0;
       if(c[1].orig===0 && r1) continue;           // across-zero has its own generator
       if(kind==='ones' && !(r1&&!r2)) continue;
@@ -2000,22 +2063,32 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
     exampleSteps(ex).forEach(function(s){ h+='<li>'+esc(s)+'</li>'; });
     h+='<li>Answer: <b>'+ex.result+'</b></li></ol></div></div>';
 
-    h+='<div class="wgrid">';
-    S.problems.forEach(function(it,i){
+    function card(it,i){
       var tag = it.tag==='warm' ? (i===S.problems.length-1?'finish strong':'warm-up') : 'focus';
-      h+='<div class="wp"><div class="wph"><b>'+(i+1)+'</b><span class="tag '+(it.tag==='warm'?'warm':'focus')+'">'+tag+'</span></div>'+sheetProblemHTML(it.p)+'</div>';
+      return '<div class="wp"><div class="wph"><b>'+(i+1)+'</b><span class="tag '+(it.tag==='warm'?'warm':'focus')+'">'+tag+'</span></div>'+sheetProblemHTML(it.p)+'</div>';
+    }
+    h+='<div class="wgrid">';
+    S.problems.slice(0,6).forEach(function(it,i){ h+=card(it,i); });
+    h+='</div>';
+
+    // page 2: the rest of the problems
+    h+='<div class="pagebreak"><div class="contd"><h2>Keep going!</h2><div class="nm">Name: <span>'+esc(S.name||'')+'</span></div></div>';
+    h+='<div class="wgrid">';
+    S.problems.slice(6).forEach(function(it,k){ h+=card(it,k+6); });
+    h+='</div>';
+    h+='<p class="small" style="margin-top:12px">Green boxes are for carries. The space above subtraction problems is for crossing out and writing the new numbers.</p></div>';
+
+    // answer key: every problem fully worked
+    h+='<div class="pagebreak"><h2 style="margin-top:0">Answer key with worked solutions (for grown-ups)</h2>';
+    h+='<p class="small">Problems 1, 2 and 10 keep strengths warm. Problems 3–9 target the focus skills, weighted toward the weakest. Red cross-outs show trades; small green 1s show carries. If your child gets stuck, ask "What did the column on the right give or need?" before showing a solution.</p>';
+    h+='<div class="kgrid">';
+    S.problems.forEach(function(it,i){
+      h+='<div class="kcard"><div class="ex kx">'+sheetProblemHTML(it.p,{example:true})+'</div><div>'+
+         '<h3>'+(i+1)+'. '+esc(probText(it.p))+' = '+it.p.result+'</h3><ol>';
+      exampleSteps(it.p).forEach(function(st){ h+='<li>'+esc(st)+'</li>'; });
+      h+='</ol><p class="sk">'+esc(genLabel(it.key))+' · '+esc(keyNote(it.p))+'</p></div></div>';
     });
     h+='</div>';
-    h+='<p class="small" style="margin-top:8px">Green boxes are for carries. The blank space above subtraction problems is for crossing out and writing new numbers.</p>';
-
-    // answer key page
-    h+='<div class="pagebreak"><h2 style="margin-top:0">Answer key (for grown-ups)</h2>';
-    h+='<p class="small">Problems 1, 2 and 10 keep strengths warm. Problems 3–9 target the focus skills, weighted toward the weakest. If a mistake shows up, ask "What did the column on the right give or need?" before showing the answer.</p>';
-    h+='<table class="keytable"><thead><tr><th>#</th><th>Problem</th><th>Answer</th><th>Regrouping</th><th>Skill</th></tr></thead><tbody>';
-    S.problems.forEach(function(it,i){
-      h+='<tr><td>'+(i+1)+'</td><td>'+esc(probText(it.p))+'</td><td><b>'+it.p.result+'</b></td><td>'+esc(keyNote(it.p))+'</td><td>'+esc(genLabel(it.key))+'</td></tr>';
-    });
-    h+='</tbody></table>';
     if(S.codes.length){
       h+='<h2>What to watch for</h2><ul>';
       S.codes.slice(0,3).forEach(function(c){ h+='<li><b>'+esc(ERR[c].title)+'.</b> '+esc(ERR[c].next)+'</li>'; });
@@ -2156,10 +2229,12 @@ body.on-paper .dots, body.on-paper .count, body.on-paper #mode{display:none;}
         if(st.good && v) c+=' good';
         h+=cell(c, colOf(k), R.ans, v, 'ans-'+k);
       });
-      var html='<div class="dgrid '+(isAdd?'add':'sub')+'">'+h+'</div>';
+      var html='<div class="sleft"><div class="dgrid '+(isAdd?'add':'sub')+'">'+h+'</div>';
       html+='<div class="dcheck" data-k="check" style="background:'+(isAdd?'var(--blue)':'var(--purple)')+'">Check my work</div>';
       html+='<div class="dfb">'+(st.fb||'')+'</div>';
-      if(st.coach) html+='<div class="dcoach'+(st.coach.indexOf('class="bp')>=0?' plain':'')+'">'+st.coach+'</div>';
+      html+='</div>';
+      var hasCoach=d.steps.some(function(x){ return !!x.coach; });
+      if(hasCoach) html+='<div class="sright">'+(st.coach ? '<div class="dcoach'+(st.coach.indexOf('class="bp')>=0?' plain':'')+'">'+st.coach+'</div>' : '')+'</div>';
       var oldPos = finger ? {l:finger.style.left, t:finger.style.top} : null;
       stage.innerHTML=html+'<div class="finger" aria-hidden="true">👆</div>';
       finger=stage.querySelector('.finger');
